@@ -8,9 +8,18 @@ variable "bucket_name" {
 
 variable "application" {
   default = {
-    app_path        = ""
-    app_name        = ""
-    app_description = ""
+    path                = ""
+    name                = ""
+    description         = ""
+    version_name        = ""
+    version_description = ""
+  }
+}
+
+variable "environment" {
+  default = {
+    name  = ""
+    stack = "64bit Amazon Linux 2018.03 v3.2.2 running Tomcat 8.5 Java 8"
   }
 }
 
