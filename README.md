@@ -1,6 +1,6 @@
-update values in variables.tf
+update values in variables.tf  
 add code to s3 folder
 
-terraform init
-terraform plan
-terraform apply
+* terraform init
+* terraform plan
+* terraform apply
