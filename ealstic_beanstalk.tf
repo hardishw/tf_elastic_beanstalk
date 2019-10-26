@@ -1,11 +1,11 @@
 resource "aws_elastic_beanstalk_application" "application" {
-  name        = var.application["path"]
+  name        = var.application["name"]
   description = var.application["description"]
 }
 
-resource "aws_elastic_beanstalk_environment" "tfenvtest" {
+resource "aws_elastic_beanstalk_environment" "environment" {
   name                = var.environment["name"]
-  application         = aws_elastic_beanstalk_application.tomcat.name
+  application         = aws_elastic_beanstalk_application.application.name
   solution_stack_name = var.environment["stack"]
 
   setting {
@@ -18,31 +18,34 @@ resource "aws_elastic_beanstalk_environment" "tfenvtest" {
 }
 
 resource "aws_elastic_beanstalk_application_version" "default" {
-  name        = var.application["version_name"]
-  application = aws_elastic_beanstalk_application.tomcat.name
+  name        = var.application["version"]
+  application = aws_elastic_beanstalk_application.application.name
   description = var.application["version_description"]
   bucket      = aws_s3_bucket.application_code.id
-  key         = data.aws_s3_bucket_object.application.key
+  key         = aws_s3_bucket_object.application.id
 
-  depends_on = [null_resource.upload_to_s3]
+  # depends_on = [null_resource.upload_to_s3]
 }
 
 resource "aws_s3_bucket" "application_code" {
-  bucket = var.bucket_name
+  bucket        = var.bucket_name
+  force_destroy = true
 
   tags = merge({
     Name = var.bucket_name
   }, var.tags)
 }
 
-resource "null_resource" "upload_to_s3" {
+resource "null_resource" "deploy_application" {
   provisioner "local-exec" {
-    command = "aws s3 sync ${path.module}/s3 s3://${aws_s3_bucket.application_code.id}/"
+    command = "aws --region ${var.region} elasticbeanstalk update-environment --environment-name ${var.environment["name"]} --version-label ${var.application["version"]}"
   }
+
+  depends_on = [aws_elastic_beanstalk_environment.environment]
 }
 
-data "aws_s3_bucket_object" "application" {
+resource "aws_s3_bucket_object" "application" {
   bucket = aws_s3_bucket.application_code.id
-  key    = var.app_path
+  key    = var.application["path"]
+  source = "s3/${var.application["path"]}"
 }
-
