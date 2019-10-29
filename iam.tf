@@ -1,3 +1,7 @@
+####
+# Create beanstalk application permissions
+####
+
 resource "aws_iam_role" "elb" {
   name = "lambda-elb-test_elb"
 
