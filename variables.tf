@@ -1,11 +1,11 @@
 variable "region" {
   description = "region to deploy infrastructure to"
-  default = "eu-west-2"
+  default     = "eu-west-2"
 }
 
 variable "bucket_name" {
   description = "bucket to deploy artifacts to"
-  default = "hardishwilkhu"
+  default     = "hardishwilkhu"
 }
 
 variable "application" {

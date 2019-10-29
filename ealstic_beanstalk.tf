@@ -61,5 +61,5 @@ resource "null_resource" "deploy_application" {
     command = "aws --region ${var.region} elasticbeanstalk update-environment --environment-name ${var.environment["name"]} --version-label ${var.application["version"]}"
   }
 
-  depends_on = [aws_elastic_beanstalk_environment.environment,aws_elastic_beanstalk_application_version.default]
+  depends_on = [aws_elastic_beanstalk_environment.environment, aws_elastic_beanstalk_application_version.default]
 }
