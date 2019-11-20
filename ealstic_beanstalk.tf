@@ -2,13 +2,8 @@
 # upload application to s3 bucket
 ####
 
-resource "aws_s3_bucket" "application_code" {
+data "aws_s3_bucket" "application_code" {
   bucket        = var.bucket_name
-  force_destroy = true
-
-  tags = merge({
-    Name = var.bucket_name
-  }, var.tags)
 }
 
 resource "aws_s3_bucket_object" "application" {
