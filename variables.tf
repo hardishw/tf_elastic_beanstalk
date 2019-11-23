@@ -33,7 +33,13 @@ variable "environment" {
   }
 }
 
-variable "subnets" {
+variable "instance_subnets" {
+  description = "subnets to deploy instances to"
+  type        = "list"
+  default     = []
+}
+
+variable "elb_subnets" {
   description = "subnets to deploy instances to"
   type        = "list"
   default     = []
