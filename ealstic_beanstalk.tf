@@ -3,7 +3,7 @@
 ####
 
 data "aws_s3_bucket" "application_code" {
-  bucket        = var.bucket_name
+  bucket = var.bucket_name
 }
 
 resource "aws_s3_bucket_object" "application" {
@@ -26,6 +26,25 @@ resource "aws_elastic_beanstalk_environment" "environment" {
     name      = "IamInstanceProfile"
     value     = aws_iam_instance_profile.elb-profile.name
   }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = var.environment["vpc_id"]
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = var.subnets
+  }
+
+  setting {
+    namespace = "aws:elb:listener:listener_port"
+    name      = "SSLCertificateId"
+    value     = var.environment["ssl_cert_id"]
+  }
+
 
   tags = var.tags
 }
