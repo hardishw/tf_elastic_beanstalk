@@ -30,19 +30,10 @@ variable "environment" {
     stack       = "64bit Amazon Linux 2018.03 v3.3.0 running Tomcat 8.5 Java 8"
     vpc_id      = "vpc-8b05abee"
     ssl_cert_id = ""
+    #eg "subnet-11111111,subnet-22222222"
+    instance_subnets = ""
+    elb_subnets      = ""
   }
-}
-
-variable "instance_subnets" {
-  description = "subnets to deploy instances to"
-  type        = "list"
-  default     = []
-}
-
-variable "elb_subnets" {
-  description = "subnets to deploy instances to"
-  type        = "list"
-  default     = []
 }
 
 variable "tags" {

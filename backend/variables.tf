@@ -5,3 +5,4 @@ variable "bucket_name" {
 variable "table_name" {
   default = "terraform-lock"
 }
+

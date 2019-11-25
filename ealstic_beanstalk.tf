@@ -7,7 +7,7 @@ data "aws_s3_bucket" "application_code" {
 }
 
 resource "aws_s3_bucket_object" "application" {
-  bucket = aws_s3_bucket.application_code.id
+  bucket = data.aws_s3_bucket.application_code.id
   key    = var.application["path"]
   source = "s3/${var.application["path"]}"
 }
@@ -36,13 +36,13 @@ resource "aws_elastic_beanstalk_environment" "environment" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
-    value     = var.instance_subnets
+    value     = var.environment["instance_subnets"]
   }
 
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBSubnets"
-    value     = var.elb_subnets
+    value     = var.environment["elb_subnets"]
   }
 
   setting {
@@ -50,7 +50,6 @@ resource "aws_elastic_beanstalk_environment" "environment" {
     name      = "SSLCertificateId"
     value     = var.environment["ssl_cert_id"]
   }
-
 
   tags = var.tags
 }
@@ -68,7 +67,7 @@ resource "aws_elastic_beanstalk_application_version" "default" {
   name        = var.application["version"]
   application = aws_elastic_beanstalk_application.application.name
   description = var.application["version_description"]
-  bucket      = aws_s3_bucket.application_code.id
+  bucket      = data.aws_s3_bucket.application_code.id
   key         = aws_s3_bucket_object.application.id
 }
 
