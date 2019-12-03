@@ -46,9 +46,27 @@ resource "aws_elastic_beanstalk_environment" "environment" {
   }
 
   setting {
-    namespace = "aws:elb:listener:listener_port"
+    namespace = "aws:elb:listener:443"
     name      = "SSLCertificateId"
     value     = var.environment["ssl_cert_id"]
+  }
+
+  setting {
+    namespace = "aws:elb:listener:443"
+    name      = "ListenerProtocol"
+    value     = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elb:listener:80"
+    name      = "ListenerProtocol"
+    value     = "HTTP"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application"
+    name      = "ApplicationHealthcheckURL"
+    value     = "/docs/index.html"
   }
 
   tags = var.tags
@@ -84,5 +102,5 @@ resource "null_resource" "deploy_application" {
     version = var.application["version"]
   }
 
-  depends_on = [aws_elastic_beanstalk_application_version.default]
+  depends_on = [aws_elastic_beanstalk_application_version.default, aws_elastic_beanstalk_environment.environment]
 }
