@@ -6,10 +6,20 @@ data "aws_s3_bucket" "application_code" {
   bucket = var.bucket_name
 }
 
+resource "null_resource" "curl_application" {
+  provisioner "local-exec" {
+    command = "curl -o s3/${var.application["path"]} ${var.application["nexus_url"]}"
+  }
+
+  depends_on = [aws_elastic_beanstalk_application_version.default, aws_elastic_beanstalk_environment.environment]
+}
+
 resource "aws_s3_bucket_object" "application" {
   bucket = data.aws_s3_bucket.application_code.id
   key    = var.application["path"]
   source = "s3/${var.application["path"]}"
+
+  depends_on = [null_resource.curl_application]
 }
 
 ####
@@ -67,6 +77,23 @@ resource "aws_elastic_beanstalk_environment" "environment" {
     namespace = "aws:elasticbeanstalk:application"
     name      = "ApplicationHealthcheckURL"
     value     = "/docs/index.html"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application"
+    name      = "ApplicationHealthcheckURL"
+    value     = "/docs/index.html"
+  }
+
+  dynamic "setting" {
+    for_each = var.env_vars
+
+    content {
+      namespace = "aws:elasticbeanstalk:application:environment"
+      name      = setting.key
+      value     = setting.value
+    }
+
   }
 
   tags = var.tags

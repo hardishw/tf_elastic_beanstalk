@@ -19,6 +19,7 @@ variable "application" {
     description         = "test application"
     version             = "1"
     version_description = "this is an example"
+    nexus_url           = ""
   }
 }
 
@@ -33,6 +34,14 @@ variable "environment" {
     #eg "subnet-11111111,subnet-22222222"
     instance_subnets = ""
     elb_subnets      = ""
+  }
+}
+
+variable "env_vars" {
+  description = "beanstalk environment variables"
+  type        = "map"
+  default = {
+    name = "dev"
   }
 }
 
